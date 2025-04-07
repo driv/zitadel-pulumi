@@ -1,0 +1,41 @@
+assertNoLeakedSecrets: false
+ingress:
+  enabled: true
+  hosts:
+    - grafana.local.amazinglyabstract.it
+grafana.ini:
+  security:
+    strict_transport_security: false
+  debug: true
+  server:
+    root_url: https://grafana.local.amazinglyabstract.it/
+  auth.generic_oauth:
+    enabled: true
+    name: Zitadel-OAuth
+    allow_sign_up: true
+    client_id: "314593099290574864"
+    scopes: openid email profile offline_access roles
+    email_attribute_path: email
+    login_attribute_path: preferred_username
+    name_attribute_path: full_name
+    auth_url:  https://my-zitadel.local.amazinglyabstract.it/oauth/v2/authorize
+    token_url: https://my-zitadel.local.amazinglyabstract.it/oauth/v2/token
+    api_url: https://my-zitadel.local.amazinglyabstract.it/oidc/v1/userinfo 
+    use_pkce: true
+    role_attribute_strict: true
+    role_attribute_path: >
+      "urn:zitadel:iam:org:project:roles"."admin" && 'Admin' ||
+      "urn:zitadel:iam:org:project:roles"."editor" && 'Editor' ||
+      "urn:zitadel:iam:org:project:roles"."viewer" && 'Viewer' ||
+      'INVALID'
+
+  log:
+    mode: console
+    level: debug
+
+# envValueFrom:
+  # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+  #   secretKeyRef:
+  #     key: "attribute.client_secret"
+  #     name: grafana-oauth-client
+  #     optional: true

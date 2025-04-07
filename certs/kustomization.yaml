@@ -1,0 +1,11 @@
+resources:
+  - https://raw.githubusercontent.com/zitadel/zitadel-charts/main/examples/2-postgres-secure/certs-job.yaml
+
+images:
+  - name: certs-job
+    newName: busybox
+    newTag: latest
+
+namePrefix: certs-
+
+namespace: default

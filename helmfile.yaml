@@ -1,0 +1,47 @@
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  - name: zitadel
+    url: https://charts.zitadel.com
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+
+
+releases:
+  - name: create-certs
+    namespace: default
+    chart: ./certs
+  - name: ingress
+    # namespace: default
+    chart: ./ingress
+  - name: db
+    namespace: default
+    chart: bitnami/postgresql
+    version: 12.10.0
+    wait: true
+    values:
+      - https://raw.githubusercontent.com/zitadel/zitadel-charts/main/examples/4-machine-user/postgres-values.yaml
+  - name: my-zitadel
+    namespace: default
+    chart: zitadel/zitadel
+    values:
+      - https://raw.githubusercontent.com/zitadel/zitadel-charts/main/examples/4-machine-user/zitadel-values.yaml
+      - ingress:
+          enabled: true
+          hosts:
+          - host: my-zitadel.local.amazinglyabstract.it
+            paths:
+            - path: /
+              pathType: Prefix
+      - zitadel:
+          configmapConfig:
+            ExternalDomain: my-zitadel.local.amazinglyabstract.it 
+            ExternalSecure: true
+            ExternalPort: 443
+            # http://my-zitadel.local.amazinglyabstract.it 
+  - name: my-grafana
+    namespace: monitoring
+    chart: grafana/grafana
+    values:
+      - grafana-values.yaml
+    version: 8.8.4

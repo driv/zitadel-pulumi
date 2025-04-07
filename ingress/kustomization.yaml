@@ -1,0 +1,3 @@
+resources:
+  - deploy-ingress-nginx.yaml
+  - local-cluster-tls-secret.yaml
