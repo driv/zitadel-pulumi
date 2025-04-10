@@ -26,19 +26,7 @@ releases:
     chart: zitadel/zitadel
     values:
       - https://raw.githubusercontent.com/zitadel/zitadel-charts/main/examples/4-machine-user/zitadel-values.yaml
-      - ingress:
-          enabled: true
-          hosts:
-          - host: my-zitadel.local.amazinglyabstract.it
-            paths:
-            - path: /
-              pathType: Prefix
-      - zitadel:
-          configmapConfig:
-            ExternalDomain: my-zitadel.local.amazinglyabstract.it 
-            ExternalSecure: true
-            ExternalPort: 443
-            # http://my-zitadel.local.amazinglyabstract.it 
+      - zitadel-values.yaml
   - name: my-grafana
     namespace: monitoring
     chart: grafana/grafana
