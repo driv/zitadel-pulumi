@@ -1,0 +1,4 @@
+encryptionsalt: v1:HnoMEju9g4M=:v1:UyeKn/ESGAKMMnW3:ChGFO3xWw/JeANNZBsawGBlTDs4dyg==
+config:
+  zitadel:domain: my-zitadel.local.amazinglyabstract.it
+  zitadel:jwtProfileFile: ./zitadel-admin-sa.json

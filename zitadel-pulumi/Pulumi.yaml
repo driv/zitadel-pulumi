@@ -1,0 +1,7 @@
+name: zitadel-pulumi
+description: zitadel configuration
+runtime: go
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: go
