@@ -13,7 +13,7 @@ grafana.ini:
     enabled: true
     name: Zitadel-OAuth
     allow_sign_up: true
-    client_id: "314593099290574864"
+    client_id: "315471055399485455"
     scopes: openid email profile offline_access roles
     email_attribute_path: email
     login_attribute_path: preferred_username
