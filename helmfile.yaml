@@ -6,7 +6,6 @@ repositories:
   - name: grafana
     url: https://grafana.github.io/helm-charts
 
-
 releases:
   - name: create-certs
     namespace: default
@@ -33,3 +32,9 @@ releases:
     values:
       - grafana-values.yaml
     version: 8.8.4
+  - name: pulumi-kubernetes-operator
+    namespace: pulumi-kubernetes-operator
+    chart: oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
+    createNamespace: true
+    version: "2.0.0" # Specify a semver-compliant version
+# helm install --create-namespace -n pulumi-kubernetes-operator pulumi-kubernetes-operator oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
