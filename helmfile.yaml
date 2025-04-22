@@ -5,6 +5,8 @@ repositories:
     url: https://charts.zitadel.com
   - name: grafana
     url: https://grafana.github.io/helm-charts
+  - name: minio
+    url: https://charts.min.io/
 
 releases:
   - name: create-certs
@@ -36,5 +38,16 @@ releases:
     namespace: pulumi-kubernetes-operator
     chart: oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
     createNamespace: true
-    version: "2.0.0" # Specify a semver-compliant version
-# helm install --create-namespace -n pulumi-kubernetes-operator pulumi-kubernetes-operator oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
+    version: "2.0.0"
+    # values:
+    # - image:
+    #     pullPolicy: Never
+    #     # registry: ""
+    #     repository: pulumi-kubernetes-operator
+    #     tag: v2.0-mine.0
+
+  - name: minio-pulumi-state
+    namespace: minio
+    chart: minio/minio
+    values:
+      - minio-values.yaml
