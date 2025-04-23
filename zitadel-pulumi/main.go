@@ -20,15 +20,6 @@ func createRole(ctx *pulumi.Context, projectID pulumi.IDOutput, role Role) (*zit
 	})
 }
 
-func createRoles(ctx *pulumi.Context, projectID pulumi.IDOutput, roles []Role) error {
-	for _, role := range roles {
-		if _, err := createRole(ctx, projectID, role); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		proj, err := zitadel.NewProject(ctx, "infrastructure", &zitadel.ProjectArgs{
@@ -60,6 +51,7 @@ func main() {
 			IdTokenUserinfoAssertion: pulumi.Bool(true),
 			GrantTypes: pulumi.StringArray{
 				pulumi.String("OIDC_GRANT_TYPE_REFRESH_TOKEN"),
+				pulumi.String("OIDC_GRANT_TYPE_AUTHORIZATION_CODE"),
 			},
 			ResponseTypes: pulumi.StringArray{
 				pulumi.String("OIDC_RESPONSE_TYPE_CODE"),
