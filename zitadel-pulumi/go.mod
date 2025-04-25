@@ -6,6 +6,8 @@ toolchain go1.21.6
 
 require github.com/pulumi/pulumi/sdk/v3 v3.117.0
 
+require github.com/pulumi/pulumi-kubernetes/sdk/v3 v3.30.2 // indirect
+
 require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect

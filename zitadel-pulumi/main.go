@@ -1,6 +1,8 @@
 package main
 
 import (
+	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/core/v1"
+	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/pulumiverse/pulumi-zitadel/sdk/go/zitadel"
 )
@@ -62,7 +64,21 @@ func main() {
 			return err
 		}
 
+		_, err = corev1.NewSecret(ctx, "grafana-secret", &corev1.SecretArgs{
+			Metadata: &metav1.ObjectMetaArgs{
+				Name:      pulumi.String("grafana-client-secret"),
+				Namespace: pulumi.String("monitoring"),
+			},
+			StringData: pulumi.StringMap{
+				"clientId": grafanaApp.ToApplicationOidcOutput().ClientId(),
+			},
+		})
+		if err != nil {
+			return err
+		}
+
 		ctx.Export("grafanaAppId", grafanaApp.ID())
+		ctx.Export("grafanaAppClientId", grafanaApp.ClientId)
 		ctx.Export("projectId", proj.ID())
 		return nil
 	})

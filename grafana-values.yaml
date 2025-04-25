@@ -13,7 +13,7 @@ grafana.ini:
     enabled: true
     name: Zitadel-OAuth
     allow_sign_up: true
-    client_id: "315471055399485455"
+    # client_id: "317056628107051027"
     scopes: openid email profile offline_access roles
     email_attribute_path: email
     login_attribute_path: preferred_username
@@ -33,9 +33,9 @@ grafana.ini:
     mode: console
     level: debug
 
-# envValueFrom:
-  # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-  #   secretKeyRef:
-  #     key: "attribute.client_secret"
-  #     name: grafana-oauth-client
-  #     optional: true
+envValueFrom:
+  GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+    secretKeyRef:
+      key: "clientId"
+      name: grafana-client-secret
+      optional: true
