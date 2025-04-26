@@ -68,6 +68,11 @@ func main() {
 			Metadata: &metav1.ObjectMetaArgs{
 				Name:      pulumi.String("grafana-client-secret"),
 				Namespace: pulumi.String("monitoring"),
+				Labels: pulumi.StringMap{
+					"app.kubernetes.io/instance": pulumi.String("grafana"),
+					"app.kubernetes.io/component": pulumi.String("grafana"),
+					"app.kubernetes.io/part-of":    pulumi.String("monitoring"),
+				},
 			},
 			StringData: pulumi.StringMap{
 				"clientId": grafanaApp.ToApplicationOidcOutput().ClientId(),
