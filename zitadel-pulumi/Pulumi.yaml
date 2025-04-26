@@ -2,6 +2,10 @@ name: zitadel-pulumi
 description: zitadel configuration
 runtime: go
 config:
+  pulumi:autonaming:
+    value:
+      mode: verbatim
   pulumi:tags:
     value:
       pulumi:template: go
+
