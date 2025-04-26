@@ -25,6 +25,7 @@ func createRole(ctx *pulumi.Context, projectID pulumi.IDOutput, role Role) (*zit
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		proj, err := zitadel.NewProject(ctx, "infrastructure", &zitadel.ProjectArgs{
+			Name: pulumi.String("Infrastructure"),
 			ProjectRoleAssertion: pulumi.Bool(true),
 		})
 		if err != nil {
@@ -42,6 +43,7 @@ func main() {
 		}
 
 		grafanaApp, err := zitadel.NewApplicationOidc(ctx, "grafana", &zitadel.ApplicationOidcArgs{
+			Name:      pulumi.String("Grafana"),
 			ProjectId: proj.ID(),
 			RedirectUris: pulumi.StringArray{
 				pulumi.String("https://grafana.local.amazinglyabstract.it/login/generic_oauth"),
@@ -69,9 +71,9 @@ func main() {
 				Name:      pulumi.String("grafana-client-secret"),
 				Namespace: pulumi.String("monitoring"),
 				Labels: pulumi.StringMap{
-					"app.kubernetes.io/instance": pulumi.String("grafana"),
+					"app.kubernetes.io/instance":  pulumi.String("grafana"),
 					"app.kubernetes.io/component": pulumi.String("grafana"),
-					"app.kubernetes.io/part-of":    pulumi.String("monitoring"),
+					"app.kubernetes.io/part-of":   pulumi.String("monitoring"),
 				},
 			},
 			StringData: pulumi.StringMap{
