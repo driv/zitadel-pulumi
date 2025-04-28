@@ -25,7 +25,7 @@ func createRole(ctx *pulumi.Context, projectID pulumi.IDOutput, role Role) (*zit
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		proj, err := zitadel.NewProject(ctx, "infrastructure", &zitadel.ProjectArgs{
-			Name: pulumi.String("Infrastructure"),
+			Name:                 pulumi.String("Infrastructure"),
 			ProjectRoleAssertion: pulumi.Bool(true),
 		})
 		if err != nil {
@@ -42,51 +42,59 @@ func main() {
 			return err
 		}
 
-		grafanaApp, err := zitadel.NewApplicationOidc(ctx, "grafana", &zitadel.ApplicationOidcArgs{
-			Name:      pulumi.String("Grafana"),
-			ProjectId: proj.ID(),
-			RedirectUris: pulumi.StringArray{
-				pulumi.String("https://grafana.local.amazinglyabstract.it/login/generic_oauth"),
-			},
-			PostLogoutRedirectUris: pulumi.StringArray{
-				pulumi.String("https://grafana.local.amazinglyabstract.it/login"),
-			},
-			AppType:                  pulumi.String("OIDC_APP_TYPE_WEB"),
-			IdTokenUserinfoAssertion: pulumi.Bool(true),
-			GrantTypes: pulumi.StringArray{
-				pulumi.String("OIDC_GRANT_TYPE_REFRESH_TOKEN"),
-				pulumi.String("OIDC_GRANT_TYPE_AUTHORIZATION_CODE"),
-			},
-			ResponseTypes: pulumi.StringArray{
-				pulumi.String("OIDC_RESPONSE_TYPE_CODE"),
-			},
-			AuthMethodType: pulumi.String("OIDC_AUTH_METHOD_TYPE_NONE"),
-		})
+		grafanaApp, err := createGrafanaApp(ctx, proj)
 		if err != nil {
 			return err
 		}
 
-		_, err = corev1.NewSecret(ctx, "grafana-secret", &corev1.SecretArgs{
-			Metadata: &metav1.ObjectMetaArgs{
-				Name:      pulumi.String("grafana-client-secret"),
-				Namespace: pulumi.String("monitoring"),
-				Labels: pulumi.StringMap{
-					"app.kubernetes.io/instance":  pulumi.String("grafana"),
-					"app.kubernetes.io/component": pulumi.String("grafana"),
-					"app.kubernetes.io/part-of":   pulumi.String("monitoring"),
-				},
-			},
-			StringData: pulumi.StringMap{
-				"clientId": grafanaApp.ToApplicationOidcOutput().ClientId(),
-			},
-		})
+		_, err = createGrafanaSecret(ctx, grafanaApp.ClientId)
 		if err != nil {
 			return err
 		}
 
-		ctx.Export("grafanaAppId", grafanaApp.ID())
 		ctx.Export("grafanaAppClientId", grafanaApp.ClientId)
 		ctx.Export("projectId", proj.ID())
 		return nil
 	})
+}
+
+func createGrafanaSecret(ctx *pulumi.Context, grafanaClientId pulumi.StringOutput) (*corev1.Secret, error) {
+	return corev1.NewSecret(ctx, "grafana-secret", &corev1.SecretArgs{
+		Metadata: &metav1.ObjectMetaArgs{
+			Name:      pulumi.String("grafana-client-secret"),
+			Namespace: pulumi.String("monitoring"),
+			Labels: pulumi.StringMap{
+				"app.kubernetes.io/instance":  pulumi.String("grafana"),
+				"app.kubernetes.io/component": pulumi.String("grafana"),
+				"app.kubernetes.io/part-of":   pulumi.String("monitoring"),
+			},
+		},
+		StringData: pulumi.StringMap{
+			"clientId": grafanaClientId,
+		},
+	})
+}
+
+func createGrafanaApp(ctx *pulumi.Context, proj *zitadel.Project) (*zitadel.ApplicationOidc, error) {
+	grafanaApp, err := zitadel.NewApplicationOidc(ctx, "grafana", &zitadel.ApplicationOidcArgs{
+		Name:      pulumi.String("Grafana"),
+		ProjectId: proj.ID(),
+		RedirectUris: pulumi.StringArray{
+			pulumi.String("https://grafana.local.amazinglyabstract.it/login/generic_oauth"),
+		},
+		PostLogoutRedirectUris: pulumi.StringArray{
+			pulumi.String("https://grafana.local.amazinglyabstract.it/login"),
+		},
+		AppType:                  pulumi.String("OIDC_APP_TYPE_WEB"),
+		IdTokenUserinfoAssertion: pulumi.Bool(true),
+		GrantTypes: pulumi.StringArray{
+			pulumi.String("OIDC_GRANT_TYPE_REFRESH_TOKEN"),
+			pulumi.String("OIDC_GRANT_TYPE_AUTHORIZATION_CODE"),
+		},
+		ResponseTypes: pulumi.StringArray{
+			pulumi.String("OIDC_RESPONSE_TYPE_CODE"),
+		},
+		AuthMethodType: pulumi.String("OIDC_AUTH_METHOD_TYPE_NONE"),
+	})
+	return grafanaApp, err
 }
