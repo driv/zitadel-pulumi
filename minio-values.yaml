@@ -1,0 +1,32 @@
+resources:
+  requests:
+    memory: 512Mi
+
+replicas: 1
+
+persistence:
+  enabled: false
+
+mode: standalone
+
+rootUser: rootuser
+rootPassword: rootpass123
+
+ingress:
+  enabled: true
+  hosts:
+    - minio.local.amazinglyabstract.it
+
+consoleIngress:
+  enabled: true
+  hosts:
+    - console-minio.local.amazinglyabstract.it
+
+users:
+# TODO switch to a secret
+- accessKey: pulumi
+  secretKey: pulumi123
+  policy: readwrite
+
+buckets:
+- name: pulumi-state
