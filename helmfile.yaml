@@ -13,7 +13,6 @@ releases:
     namespace: default
     chart: ./certs
   - name: ingress
-    # namespace: default
     chart: ./ingress
   - name: db
     namespace: default
@@ -39,13 +38,6 @@ releases:
     chart: oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator
     createNamespace: true
     version: "2.0.0"
-    # values:
-    # - image:
-    #     pullPolicy: Never
-    #     # registry: ""
-    #     repository: pulumi-kubernetes-operator
-    #     tag: v2.0-mine.0
-
   - name: minio-pulumi-state
     namespace: minio
     chart: minio/minio
